@@ -13,6 +13,7 @@ flask_sqlalchemy = "^2.4"
 psycopg2 = "^2.8"
 uwsgi = "^2.0"
 ujson = "^1.35"
+PyHamcrest = "^1.9"
 
 [tool.poetry.dev-dependencies]
 

@@ -12,6 +12,13 @@ def socket():
 @pytest.fixture(scope="module")
 def Server():
     class Dummy:
-        host_port = "0.0.0.0", 8080
+        host = "0.0.0.0"
+        port = 8080
+        uri = f'http://{host}:{port}/'
     return Dummy
+
+
+@pytest.fixture(scope="module")
+def socket_error():
+    return s.error
 

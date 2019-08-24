@@ -9,9 +9,9 @@ def socket():
     _socket.close()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def Server():
     class Dummy:
-        host_port = '0.0.0.0', 8080
+        host_port = "0.0.0.0", 8080
     return Dummy
 

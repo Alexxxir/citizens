@@ -117,11 +117,17 @@ class Citizen(db.Model):
             for key, value in dict_citizen.items():
                 if key != "relatives":
                     setattr(self, key, value)
+
             if "relatives" in dict_citizen:
                 if not isinstance(dict_citizen["relatives"], list):
                     raise ValueError(ErrorFieldsMessages.INCORRECT_FIELDS)
+                for relative in dict_citizen["relatives"]:
+                    if not isinstance(relative, int):
+                        raise ValueError(ErrorFieldsMessages.INCORRECT_FIELDS)
+
                 existing_ids = {relative.citizen_id for relative in self.relatives}
                 new_ids = set(dict_citizen["relatives"])
+
                 remove_relatives_ids = existing_ids - new_ids
                 if remove_relatives_ids:
                     remove_relatives = db.session\

@@ -1,6 +1,7 @@
 import datetime
 from numpy import percentile
 import ujson
+import json
 from flask import Response
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import BadRequest, NotFound
@@ -17,9 +18,11 @@ class AddImportView(JsonApiView):
             request_data = self.json
         except ValueError:
             raise BadRequest(ErrorMessages.NOT_JSON_FORMAT)
+
         if (not isinstance(request_data.get("citizens", None), list) or
                 request_data.keys() != {"citizens"}):
             raise BadRequest(ErrorMessages.INCORRECT_DATA_FORMAT)
+
         try:
             citizens = {
                 citizen["citizen_id"]: Citizen.from_dict(citizen)
@@ -27,11 +30,11 @@ class AddImportView(JsonApiView):
             }
         except ValueError as e:
             raise BadRequest(e)
+
         if len(citizens) != len(request_data["citizens"]):
             raise BadRequest(ErrorMessages.INCORRECT_DATA_FORMAT)
 
         citizens_list = list(citizens.values())
-
         try:
             for citizen in citizens_list:
                 citizen.relatives = [citizens[relative] for relative in citizen.relatives]
@@ -73,6 +76,7 @@ class ImportCitizenView(JsonApiView):
             raise NotFound(
                 ErrorMessages.NOT_FOUND_CITIZEN
             )
+
         try:
             citizen.update_from_dict(json_data)
         except ValueError as e:
@@ -156,4 +160,4 @@ class ImportTownsStateView(JsonApiView):
                 for town, ages in ages_in_towns.items()
             ]
         }
-        return Response(ujson.dumps(results), HTTPStatus.OK)
+        return Response(json.dumps(results), HTTPStatus.OK)

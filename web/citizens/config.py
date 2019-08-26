@@ -11,11 +11,14 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
+class TestingConfig(Config):
+    DEBUG = False
+    POSTGRES_DB = os.environ.get("POSTGRES_DB", "test")
+
+
 class ProductionConfig(Config):
     DEBUG = False
-    DEVELOPMENT = False
 
 
 class DevelopmentConfig(Config):
-    DEVELOPMENT = True
     DEBUG = True

@@ -1,24 +1,22 @@
 import pytest
 import socket as s
 
+from sqlalchemy import create_engine
 
-@pytest.yield_fixture
-def socket():
-    _socket = s.socket(s.AF_INET, s.SOCK_STREAM)
-    yield _socket
-    _socket.close()
+from ...citizens.app import create_app
+from ..database import db
 
 
-@pytest.fixture(scope="module")
-def Server():
-    class Dummy:
-        host = "0.0.0.0"
-        port = 8080
-        uri = f"http://{host}:{port}/"
-
-    return Dummy
+@pytest.fixture(autouse=True)
+def app():
+    app = create_app(testing=True)
+    return app
 
 
-@pytest.fixture(scope="module")
-def socket_error():
-    return s.error
+@pytest.yield_fixture(autouse=True)
+def _init_db(app):
+    with app.app_context():
+        db.create_all()
+        yield
+        db.session.remove()
+        db.drop_all()

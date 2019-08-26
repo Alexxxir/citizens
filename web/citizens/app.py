@@ -11,7 +11,7 @@ def create_app(development=True):
 
     db.init_app(app)
 
-    from .citizens.views import module as citizens
+    from .citizens.module import module as citizens
 
     app.register_blueprint(citizens)
     return app

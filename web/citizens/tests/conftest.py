@@ -1,8 +1,4 @@
 import pytest
-import socket as s
-
-from sqlalchemy import create_engine
-
 from ...citizens.app import create_app
 from ..database import db
 

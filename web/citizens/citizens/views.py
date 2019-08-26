@@ -44,7 +44,7 @@ class AddImportView(JsonApiView):
                     raise BadRequest(ErrorMessages.INCORRECT_RELATIVES)
 
         try:
-            next_id = db.session.query(db.func.nextval('import_id_seq')).first()[0][0]
+            next_id = db.session.query(db.func.nextval('import_id_seq')).first()[0]
             for citizen in citizens_list:
                 citizen.import_id = next_id
 

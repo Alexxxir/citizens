@@ -1,4 +1,5 @@
-from ..utils.validators import validate_address, validate_birth_date
+from .error_messages import ErrorMessages, ErrorFieldsMessages
+from .validators import validate_address, validate_birth_date
 from ..database import db
 from sqlalchemy.dialects.postgresql import ENUM
 
@@ -14,8 +15,21 @@ class RelatedCommunication(db.Model):
 
 class Citizen(db.Model):
     __tablename__ = "citizens"
-    __table_args__ = (db.Index("index_1", "import_id", "citizen_id", unique=True),)
-
+    __table_args__ = (
+        db.Index("index_1", "import_id", "citizen_id", unique=True),
+        db.Index("index_2", "import_id"),
+    )
+    SERIALIZED_FIELDS = {
+        "citizen_id",
+        "town",
+        "street",
+        "building",
+        "apartment",
+        "name",
+        "birth_date",
+        "gender",
+        "relatives",
+    }
     GENDER = ENUM("female", "male", name="gender")
 
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
@@ -39,7 +53,7 @@ class Citizen(db.Model):
     def validate_citizen_id(self, key, citizen_id):
         if isinstance(citizen_id, int) and citizen_id >= 0:
             return citizen_id
-        raise ValueError("citizen_id - целое неотрицательное число")
+        raise ValueError(ErrorFieldsMessages.INCORRECT_CITIZEN_ID)
 
     @db.validates("town")
     def validate_town(self, key, town):
@@ -57,13 +71,13 @@ class Citizen(db.Model):
     def validate_apartment(self, key, apartment):
         if isinstance(apartment, int) and apartment >= 0:
             return apartment
-        raise ValueError("apartment - целое неотрицательное число")
+        raise ValueError(ErrorFieldsMessages.INCORRECT_APARTMENT)
 
     @db.validates("name")
     def validate_name(self, key, name):
         if isinstance(name, str) and 0 < len(name) <= 256:
             return name
-        raise ValueError("name - непустая строка, не более 256 символов")
+        raise ValueError(ErrorFieldsMessages.INCORRECT_NAME)
 
     @db.validates("birth_date")
     def validate_birth_date(self, key, birth_date):
@@ -73,5 +87,4 @@ class Citizen(db.Model):
     def validate_gender(self, key, gender):
         if gender in Citizen.GENDER.enums:
             return gender
-        raise ValueError("gender - male или female")
-
+        raise ValueError(ErrorFieldsMessages.INCORRECT_GENDER)

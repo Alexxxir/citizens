@@ -1,6 +1,7 @@
 import re
 import datetime
 
+from .error_messages import ErrorFieldsMessages
 
 DATE_FORMAT = re.compile(r"(\d{2})\.(\d{2})\.(\d{4})")
 ADDRESS_FORMAT = re.compile(r"\w")
@@ -12,18 +13,24 @@ def validate_birth_date(birth_date_str: str) -> str:
     """
     date_parse = DATE_FORMAT.fullmatch(birth_date_str)
     if not date_parse:
-        raise ValueError("Дата рождения должна быть в формате ДД.ММ.ГГГГ")
+        raise ValueError(ErrorFieldsMessages.INCORRECT_DATA_FORMAT)
     birth_date = datetime.date(
         int(date_parse.group(3)), int(date_parse.group(2)), int(date_parse.group(1))
     )
 
     if birth_date > datetime.datetime.utcnow().date():
-        raise ValueError("Дата рождения должна быть меньше текущей даты.")
+        raise ValueError(ErrorFieldsMessages.INCORRECT_BIRTH_DATA)
 
-    return birth_date_str
+    return str(birth_date)
 
 
 def validate_address(address: str, name: str) -> str:
-    if isinstance(address, str) and 0 < len(address) <= 256 and ADDRESS_FORMAT.search(address):
+    if (
+        isinstance(address, str)
+        and 0 < len(address) <= 256
+        and ADDRESS_FORMAT.search(address)
+    ):
         return address
-    raise ValueError(f"{name} - непустая строка, содержащая хотя бы 1 букву или цифру, не более 256 символов")
+    raise ValueError(
+        ErrorFieldsMessages.INCORRECT_ADDRESS
+    )

@@ -22,3 +22,9 @@ cp env.sample .env
 ```
 docker-compose up
 ```
+
+Запуск тестов
+
+```
+pytest
+```

@@ -7,7 +7,10 @@ from .config import DevelopmentConfig, ProductionConfig
 
 def create_app(development=True):
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig if development else ProductionConfig)
+    config = DevelopmentConfig
+    if not development:
+        config = ProductionConfig
+    app.config.from_object(config)
 
     db.init_app(app)
 

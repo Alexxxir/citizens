@@ -14,11 +14,11 @@ def Server():
     class Dummy:
         host = "0.0.0.0"
         port = 8080
-        uri = f'http://{host}:{port}/'
+        uri = f"http://{host}:{port}/"
+
     return Dummy
 
 
 @pytest.fixture(scope="module")
 def socket_error():
     return s.error
-

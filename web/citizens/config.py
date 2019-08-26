@@ -3,7 +3,7 @@ import os
 
 class Config:
     DEBUG = False
-    POSTGRES_URL = os.environ.get("POSTGRES_URL", "0.0.0.0:5432")
+    POSTGRES_URL = os.environ.get("POSTGRES_URL", "db:5432")
     POSTGRES_USER = os.environ.get("POSTGRES_USER", "dev")
     POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "12345")
     POSTGRES_DB = os.environ.get("POSTGRES_DB", "dev")
